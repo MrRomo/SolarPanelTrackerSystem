@@ -45,9 +45,20 @@ A web app that lively plots data from a Firebase Realtime Database node, thanks 
 					<div class="col-md 8">
 						<canvas id="myChart" width="400" height="250"></canvas>
 					</div>
-					
+
 					<div class="col-md-4">
-						<img src="Panel.png" class="img-fluid" alt="Responsive image">
+						<div class="card-header">
+							<div class="card-title">
+								<h4 class="text-center">Orientación del panel</h4>
+							</div>
+							<div class="">
+								<!-- <img src="Panel.png" class="img-fluid" alt="Responsive image"> -->
+								<canvas id="myCanvas" width="300" height="300" style="border:1px solid #000000;" value=180></canvas>
+
+								<span for="angleRange" class="text-center" id="rollTitle">Yaw Angle</span>
+								<!-- <input type="range" class="custom-range" min="0" max="360" step="1" id="angleRange" onmousemove="rollPanel()"> -->
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

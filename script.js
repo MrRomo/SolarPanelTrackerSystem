@@ -12,21 +12,24 @@ const config = {
 
 firebase.initializeApp(config);
 var database = firebase.database();
-var data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-var zeros = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+var data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+var zeros = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 var chart = []
+var angle = 0
 var ctx = document.getElementById('myChart');
+var canvas = document.getElementById("myCanvas");
+var context = canvas.getContext("2d");
 var lineChartData = {
     labels: zeros,
     datasets: [{
         label: "Temperature",
         borderColor: 'rgb(255, 0, 9)',
-        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         yAxisID: 'y-axis-1'
     }, {
         label: "Voltage",
         borderColor: 'rgb(0, 99, 132)',
-        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         yAxisID: 'y-axis-2'
     }]
 }
@@ -47,10 +50,16 @@ chart = new Chart(ctx, {
                 id: 'y-axis-1',
                 type: 'linear',
                 position: 'left',
+                ticks: {
+                    beginAtZero: true
+                }
             }, {
                 id: 'y-axis-2',
                 type: 'linear',
-                position: 'right'
+                position: 'right',
+                ticks: {
+                    beginAtZero: true
+                }
             }]
         }
     }
@@ -72,16 +81,51 @@ devices.on('value', function (snapshot) {
     for (const device in devices) {
         chart.options.title.text = 'Device ' + device
         data = devices[device].data.split('-')
+        angle = parseInt(devices[device].angle)
         data = { 'Temperature': data[0], 'Voltage': data[1] }
 
         lineChartData.datasets.forEach(function (dataset) {
             dataset.data.push(data[dataset.label])
             dataset.data.shift()
         });
-        console.log(chart.data.datasets);
-        // chart.data.labels.push(hour);
+        // console.log(chart.data.datasets);
+        chart.data.labels.push(hour);
+        chart.data.labels.shift();
         chart.update();
-        }
-    console.log("length", chart.data.datasets[0].data.length)
-    console.log()
+    }
+    // console.log("length", chart.data.datasets[0].data.length)
 });
+
+
+setInterval(()=>{
+    exectRoll(angle)
+    console.log("angulo: " + angle);
+    $("#rollTitle").text(`Yaw Angle: ${angle}°`)
+    console.log($("rollTitle").text());
+    
+},100)
+
+function rollPanel() {
+    angle = this.event.target.value
+    exectRoll(angle)
+}
+
+function exectRoll(angle){
+    width = 300
+    height = 300
+    var image = new Image();
+    image.src = 'panel.png';
+    drawRotated(image, context, angle)
+}
+
+function drawRotated(img, ctx, degrees) {
+    canvas.width = this.width; //double the canvas width
+    canvas.height = this.height; //double the canvas height
+    var cache = this; //cache the local copy of image element for future reference
+    ctx.save(); //saves the state of canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height); //clear the canvas
+    ctx.translate(cache.width / 2, cache.height / 2); //let's translate
+    ctx.rotate(Math.PI / 180 * (degrees)); //increment the angle and rotate the image 
+    ctx.drawImage(img, -cache.width / 2, -cache.height / 2, cache.width, cache.height); //draw the image ;)
+    ctx.restore(); //restore the state of canvas
+}

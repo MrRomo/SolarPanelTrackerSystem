@@ -7,12 +7,18 @@
 #define WIFI_PASSWORD "ADBAE5FA"
 int sensorPin = A0;                 // References A0 analog pin
 int sensorValue;                    // 10-bit equivalent value of analog signal
+// Potentiometer is connected to GPIO 34 (Analog ADC1_CH6)
+const int potPin = 34;
+
+// variable for storing the potentiometer value
+int potValue = 0;
+
 
 FirebaseData firebaseData;
 char ssid[15]; //Create a Unique AP from MAC address
 
 int c = 0;
-#define MEASURE_DELAY_SEC 3
+float MEASURE_DELAY_SEC = 0.3;
 #define LED_BUILTIN 2
 
 void setup() {
@@ -56,19 +62,31 @@ void loop() {
   // Let's measure analog value and print it
   float voltage = random(1, 5);
   float temp = random(20, 35);
+  float angle = readAngle();
 
-  Serial.println(sensorValue);
+  Serial.println("Values: "+ String(sensorValue) + " Angle: " + String(angle));
   // Let's push it in firebase Realtime Database
-
-  Firebase.setString(firebaseData, "/devices/" + String(ssid) + "/data", String(temp) + "-" + String(voltage));
+  if (c = 10) {
+    Firebase.setString(firebaseData, "/devices/" + String(ssid) + "/data", String(temp) + "-" + String(voltage));
+  }
+  Firebase.setString(firebaseData, "/devices/" + String(ssid) + "/angle", String(angle));
 
 
   // Blink LED when it's done
   digitalWrite(LED_BUILTIN, 0);
-  delay(30);
+  delay(50);
   digitalWrite(LED_BUILTIN, 1);
-  delay(30);
+  delay(50);
 
   // Wait before looping
   delay(MEASURE_DELAY_SEC * 1000);
+}
+
+
+float readAngle() {
+  // Reading potentiometer value
+  potValue = analogRead(potPin);
+  Serial.println(potValue);
+  float angle = potValue * 360 / 4095;
+  return angle;
 }
