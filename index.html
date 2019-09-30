@@ -12,6 +12,8 @@ A web app that lively plots data from a Firebase Realtime Database node, thanks 
 	<link rel="stylesheet" href="style.css">
 	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 	<!-- Firebase App is always required and must be first -->
+	<script src="https://code.jquery.com/jquery-3.4.1.js"
+		integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
 	<script src="https://www.gstatic.com/firebasejs/5.5.9/firebase-app.js"></script>
 	<!-- Add additional services that you want to use -->
 	<script src="https://www.gstatic.com/firebasejs/5.5.9/firebase-database.js"></script>
@@ -38,14 +40,16 @@ A web app that lively plots data from a Firebase Realtime Database node, thanks 
 	<div class="container">
 		<div class="jumpbotron">
 			<div class="card-header">
-				<h1>Solar Panel Tracking System</h1>
+				<h1 style="display: inline;">Solar Panel Tracking System</h1>
+				<button type="button" style="margin-left: 15px; vertical-align: super;"
+					class="btn btn-sm badge-success display-2" id="stateConnection" data-toggle="modal"
+					data-target="#exampleModal">Online</button>
 			</div>
 			<div class="card-body">
 				<div class="row">
 					<div class="col-md 8">
 						<canvas id="myChart" width="400" height="250"></canvas>
 					</div>
-
 					<div class="col-md-4">
 						<div class="card-header">
 							<div class="card-title">
@@ -53,13 +57,35 @@ A web app that lively plots data from a Firebase Realtime Database node, thanks 
 							</div>
 							<div class="">
 								<!-- <img src="Panel.png" class="img-fluid" alt="Responsive image"> -->
-								<canvas id="myCanvas" width="300" height="300" style="border:1px solid #000000;" value=180></canvas>
-
+								<canvas id="myCanvas" width="300" height="300" style="border:1px solid #000000;"
+									value=180></canvas>
 								<span for="angleRange" class="text-center" id="rollTitle">Yaw Angle</span>
 								<!-- <input type="range" class="custom-range" min="0" max="360" step="1" id="angleRange" onmousemove="rollPanel()"> -->
 							</div>
 						</div>
 					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Button trigger modal -->
+
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Estado del servicio</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					El dispositivo esta desconectado o no es posible realizar una conexion con el.
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
 				</div>
 			</div>
 		</div>

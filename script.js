@@ -16,6 +16,7 @@ var data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 var zeros = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 var chart = []
 var angle = 0
+var check = false;
 var ctx = document.getElementById('myChart');
 var canvas = document.getElementById("myCanvas");
 var context = canvas.getContext("2d");
@@ -67,12 +68,15 @@ chart = new Chart(ctx, {
 
 
 var devices = database.ref('devices/')
-
+var checker
 firstData = []
 devices.on('value', function (snapshot) {
     devices = snapshot.val();
     size = chart.data.datasets[0].data.length
-
+    clearInterval(checker)
+    $("#stateConnection").removeClass("badge-danger")
+    $("#stateConnection").text("Online")
+    $('#exampleModal').modal('hide')
     var d = new Date();
     var h = d.getHours();
     var m = d.getMinutes();
@@ -83,7 +87,11 @@ devices.on('value', function (snapshot) {
         data = devices[device].data.split('-')
         angle = parseInt(devices[device].angle)
         data = { 'Temperature': data[0], 'Voltage': data[1] }
-
+        checker = setTimeout(() => {
+            $("#stateConnection").addClass("badge-danger")
+            $("#stateConnection").text("Offline")
+            $('#exampleModal').modal('show')
+        }, 3000);
         lineChartData.datasets.forEach(function (dataset) {
             dataset.data.push(data[dataset.label])
             dataset.data.shift()
@@ -97,20 +105,20 @@ devices.on('value', function (snapshot) {
 });
 
 
-setInterval(()=>{
+setInterval(() => {
     exectRoll(angle)
     console.log("angulo: " + angle);
     $("#rollTitle").text(`Yaw Angle: ${angle}°`)
     console.log($("rollTitle").text());
-    
-},100)
+
+}, 100)
 
 function rollPanel() {
     angle = this.event.target.value
     exectRoll(angle)
 }
 
-function exectRoll(angle){
+function exectRoll(angle) {
     width = 300
     height = 300
     var image = new Image();
@@ -129,3 +137,6 @@ function drawRotated(img, ctx, degrees) {
     ctx.drawImage(img, -cache.width / 2, -cache.height / 2, cache.width, cache.height); //draw the image ;)
     ctx.restore(); //restore the state of canvas
 }
+
+var checker = setInterval(() => {
+}, 6);

@@ -18,7 +18,7 @@ FirebaseData firebaseData;
 char ssid[15]; //Create a Unique AP from MAC address
 
 int c = 0;
-float MEASURE_DELAY_SEC = 0.3;
+float MEASURE_DELAY_SEC = 0.1;
 #define LED_BUILTIN 2
 
 void setup() {
