@@ -53,9 +53,14 @@ A web app that lively plots data from a Firebase Realtime Database node, thanks 
 					<div class="col-md-4">
 						<div class="card-header">
 							<div class="card-title">
-								<h4 class="text-center">Orientación del panel</h4>
+								<h4 class="text-center">Valores de referencia</h4>
 							</div>
-							<div class="">
+							<div class="card-body">
+								<h5 id="refTemp">Temperatura de referencia: 0</h5>
+								<h5 id="currentTemp">Temperatura actual: 0</h5>
+								<h5 id="currentVoltage">Voltaje actual: 0</h5>
+							</div>
+							<div class="" style="display: none;">
 								<!-- <img src="Panel.png" class="img-fluid" alt="Responsive image"> -->
 								<canvas id="myCanvas" width="300" height="300" style="border:1px solid #000000;"
 									value=180></canvas>
@@ -93,4 +98,4 @@ A web app that lively plots data from a Firebase Realtime Database node, thanks 
 	<script src="script.js"></script>
 </body>
 
-</html>
+</html>	

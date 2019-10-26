@@ -16,6 +16,7 @@ var data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 var zeros = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 var chart = []
 var angle = 0
+var refVoltage = 0
 var check = false;
 var ctx = document.getElementById('myChart');
 var canvas = document.getElementById("myCanvas");
@@ -86,7 +87,14 @@ devices.on('value', function (snapshot) {
         chart.options.title.text = 'Device ' + device
         data = devices[device].data.split('-')
         angle = parseInt(devices[device].angle)
+        console.log(data);
+        $("#currentTemp").text(`Temperatura actual: ${data[0]} °C`)
+        $("#currentVoltage").text(`Voltaje actual: ${data[1]} V`)
+        $("#refTemp").text(`Temperatura de referencia: ${data[2]} °C`)
+        
         data = { 'Temperature': data[0], 'Voltage': data[1] }
+        
+
         checker = setTimeout(() => {
             $("#stateConnection").addClass("badge-danger")
             $("#stateConnection").text("Offline")
@@ -105,13 +113,13 @@ devices.on('value', function (snapshot) {
 });
 
 
-setInterval(() => {
-    exectRoll(angle)
-    console.log("angulo: " + angle);
-    $("#rollTitle").text(`Yaw Angle: ${angle}°`)
-    console.log($("rollTitle").text());
+// setInterval(() => {
+//     exectRoll(angle)
+//     // console.log("angulo: " + angle);
+//     $("#rollTitle").text(`Yaw Angle: ${angle}°`)
+//     // console.log($("rollTitle").text());
 
-}, 100)
+// }, 100)
 
 function rollPanel() {
     angle = this.event.target.value

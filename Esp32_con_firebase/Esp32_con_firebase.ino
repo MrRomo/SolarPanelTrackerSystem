@@ -3,15 +3,31 @@
 
 #define FIREBASE_HOST "https://solar-trackin-panel.firebaseio.com"
 #define FIREBASE_AUTH "Ru26GBAd4ZwnT1UUSNhjrzMNde71tHPsG5Zf0WdQ"
-#define WIFI_SSID "JR2GWIFI"
-#define WIFI_PASSWORD "ADBAE5FA"
+#define WIFI_SSID "Wi-Fi Unimagdalena" //"JR2GWIFI"
+#define WIFI_PASSWORD "" //"ADBAE5FA"
+
 int sensorPin = A0;                 // References A0 analog pin
-int sensorValue;                    // 10-bit equivalent value of analog signal
-// Potentiometer is connected to GPIO 34 (Analog ADC1_CH6)
-const int potPin = 34;
+const int potPin= 34;  
 
 // variable for storing the potentiometer value
 int potValue = 0;
+
+//temp variables
+const int tempPin = 34;
+const int refPin = 35; 
+const int panelPin = 32; 
+
+int RawValue= 0;
+int RefValue = 0;
+
+double Voltage = 0;
+double RefVoltage = 0;
+double panelVoltage = 0;
+double RefTemp = 0;
+double tempC = 0;
+double tempF = 0;
+
+
 
 
 FirebaseData firebaseData;
@@ -60,16 +76,14 @@ void setup() {
 void loop() {
 
   // Let's measure analog value and print it
-  float voltage = random(1, 5);
-  float temp = random(20, 35);
-  float angle = readAngle();
-
-  Serial.println("Values: "+ String(sensorValue) + " Angle: " + String(angle));
+  float temp = readTemp();
+  
+  Serial.println("Temp: " + String(temp) + " Ref: " + String(RefTemp) + " Voltage: " + String(panelVoltage));
   // Let's push it in firebase Realtime Database
   if (c = 10) {
-    Firebase.setString(firebaseData, "/devices/" + String(ssid) + "/data", String(temp) + "-" + String(voltage));
+    Firebase.setString(firebaseData, "/devices/" + String(ssid) + "/data", String(temp) + "-" + String(panelVoltage) + "-" + String(RefTemp));
   }
-  Firebase.setString(firebaseData, "/devices/" + String(ssid) + "/angle", String(angle));
+  //Firebase.setString(firebaseData, "/devices/" + String(ssid) + "/angle", String(angle));
 
 
   // Blink LED when it's done
@@ -83,10 +97,16 @@ void loop() {
 }
 
 
-float readAngle() {
-  // Reading potentiometer value
-  potValue = analogRead(potPin);
-  Serial.println(potValue);
-  float angle = potValue * 360 / 4095;
-  return angle;
+double readTemp() {
+  RefValue = analogRead(refPin);
+  RawValue = analogRead(tempPin);
+  panelVoltage = analogRead(panelPin);
+  Serial.println("Panel Raw Voltage: " + String(panelVoltage));
+  panelVoltage = (panelVoltage/ 4096.0) * 3300; 
+  Voltage = (RawValue / 2048.0) * 3300; // 5000 to get millivots.
+  RefVoltage = (RefValue / 2048.0) * 3300; // 5000 to get millivots.
+  tempC = Voltage * 0.1;
+  RefTemp = RefVoltage * 0.1;
+  tempF = (tempC * 1.8) + 32; // conver to F
+  return tempC;
 }
